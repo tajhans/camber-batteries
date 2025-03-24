@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import useSWR from "swr";
 import { Battery } from "../schema";
 import { toast } from "sonner";
@@ -14,16 +15,17 @@ const fetcher = async (url: string) => {
 };
 
 export function useBatteries() {
-    const { data, error, isLoading, mutate } = useSWR<{ batteries: Battery[] }>(
-        "/api/batteries",
-        fetcher,
-        {
+    const swrOptions = useMemo(
+        () => ({
             refreshInterval: 10000, // Refresh every 10 seconds
-            onError: (err) => {
+            onError: (err: Error) => {
                 toast.error("Failed to fetch batteries");
                 console.error(err);
             },
-            compare: (a, b) => {
+            compare: (
+                a: { batteries: Battery[] } | undefined,
+                b: { batteries: Battery[] } | undefined,
+            ) => {
                 if (!a || !b) return false;
 
                 const sortedA = [...a.batteries].sort((x, y) => x.id - y.id);
@@ -31,7 +33,14 @@ export function useBatteries() {
 
                 return JSON.stringify(sortedA) === JSON.stringify(sortedB);
             },
-        },
+        }),
+        [],
+    );
+
+    const { data, error, isLoading, mutate } = useSWR<{ batteries: Battery[] }>(
+        "/api/batteries",
+        fetcher,
+        swrOptions,
     );
 
     const updateBattery = async (
