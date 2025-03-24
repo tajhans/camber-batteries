@@ -4,10 +4,10 @@ import { batteryFormSchema } from "@/lib/schema";
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } },
+    context: { params: { id: string } },
 ) {
     try {
-        const id = await params.id;
+        const id = await context.params.id;
         const battery = await redis.hgetall(`battery:${id}`);
 
         if (!battery || !Object.keys(battery).length) {
@@ -35,10 +35,10 @@ export async function GET(
 
 export async function PATCH(
     request: NextRequest,
-    { params }: { params: { id: string } },
+    context: { params: { id: string } },
 ) {
     try {
-        const id = params.id;
+        const id = await context.params.id;
         const body = await request.json();
 
         const result = batteryFormSchema.safeParse(body);
