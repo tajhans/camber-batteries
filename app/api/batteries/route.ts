@@ -38,9 +38,9 @@ export async function GET() {
         });
 
         const batteriesWithNulls = await Promise.all(batteriesPromises);
-        const batteries = batteriesWithNulls.filter(
-            (battery) => battery !== null,
-        );
+        const batteries = batteriesWithNulls
+            .filter((battery) => battery !== null)
+            .sort((a, b) => a!.id - b!.id);
 
         return NextResponse.json({ batteries });
     } catch (error) {

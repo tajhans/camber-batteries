@@ -23,6 +23,14 @@ export function useBatteries() {
                 toast.error("Failed to fetch batteries");
                 console.error(err);
             },
+            compare: (a, b) => {
+                if (!a || !b) return false;
+
+                const sortedA = [...a.batteries].sort((x, y) => x.id - y.id);
+                const sortedB = [...b.batteries].sort((x, y) => x.id - y.id);
+
+                return JSON.stringify(sortedA) === JSON.stringify(sortedB);
+            },
         },
     );
 

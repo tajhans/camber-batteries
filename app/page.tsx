@@ -27,7 +27,9 @@ export default function Home() {
         return await updateBattery(id, data);
     };
 
-    const batteriesByStatus = batteries.reduce(
+    const sortedBatteries = [...batteries].sort((a, b) => a.id - b.id);
+
+    const batteriesByStatus = sortedBatteries.reduce(
         (groups, battery) => {
             groups[battery.status].push(battery);
             return groups;
@@ -50,14 +52,18 @@ export default function Home() {
             return null;
         }
 
+        const sortedStatusBatteries = [...statusBatteries].sort(
+            (a, b) => a.id - b.id,
+        );
+
         return (
             <div className="mb-6">
                 <h3 className="flex items-center gap-2 text-lg font-medium mb-3">
                     {icon}
-                    {title} ({statusBatteries.length})
+                    {title} ({sortedStatusBatteries.length})
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                    {statusBatteries.map((battery) => (
+                    {sortedStatusBatteries.map((battery) => (
                         <BatteryCard
                             key={battery.id}
                             battery={battery}
