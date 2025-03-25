@@ -36,6 +36,7 @@ interface BatteryFormProps {
 
 export function BatteryForm({ battery, onClose, onSubmit }: BatteryFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [formChanged, setFormChanged] = useState(false);
 
     const form = useForm<BatteryFormValues>({
         resolver: zodResolver(batteryFormSchema),
@@ -49,6 +50,18 @@ export function BatteryForm({ battery, onClose, onSubmit }: BatteryFormProps) {
                   voltage: 0,
               },
     });
+
+    const formValues = form.watch();
+
+    useEffect(() => {
+        if (battery) {
+            const isDifferent =
+                formValues.status !== battery.status ||
+                formValues.voltage !== battery.voltage;
+
+            setFormChanged(isDifferent);
+        }
+    }, [formValues, battery]);
 
     useEffect(() => {
         if (battery) {
@@ -72,6 +85,7 @@ export function BatteryForm({ battery, onClose, onSubmit }: BatteryFormProps) {
             const success = await onSubmit(battery.id, values);
             if (success) {
                 form.reset(values);
+                setFormChanged(false);
             }
         } finally {
             setIsSubmitting(false);
@@ -195,7 +209,7 @@ export function BatteryForm({ battery, onClose, onSubmit }: BatteryFormProps) {
                     <div className="flex gap-2 pt-2">
                         <Button
                             type="submit"
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || !formChanged}
                             className="flex-1"
                         >
                             {isSubmitting ? "Saving..." : "Save Changes"}
