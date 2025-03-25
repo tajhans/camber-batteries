@@ -8,6 +8,7 @@ import {
     BatteryCharging,
     BatteryWarning,
     BatteryFull,
+    Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,8 +40,11 @@ export function BatteryForm({
     onCloseAction,
     onSubmitAction,
 }: BatteryFormProps) {
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [formChanged, setFormChanged] = useState(false);
+    const [previousBattery, setPreviousBattery] = useState<BatteryType | null>(
+        null,
+    );
 
     const form = useForm<BatteryFormValues>({
         resolver: zodResolver(batteryFormSchema),
@@ -56,6 +60,19 @@ export function BatteryForm({
     });
 
     const formValues = form.watch();
+
+    useEffect(() => {
+        if (isLoading && battery && previousBattery) {
+            if (
+                formValues.status === battery.status &&
+                formValues.voltage === battery.voltage &&
+                (battery.status !== previousBattery.status ||
+                    battery.voltage !== previousBattery.voltage)
+            ) {
+                setIsLoading(false);
+            }
+        }
+    }, [battery, previousBattery, formValues, isLoading]);
 
     useEffect(() => {
         if (battery) {
@@ -84,15 +101,22 @@ export function BatteryForm({
     const handleSubmit = async (values: BatteryFormValues) => {
         if (!battery) return;
 
-        setIsSubmitting(true);
+        setIsLoading(true);
+        setPreviousBattery(battery);
+
         try {
             const success = await onSubmitAction(battery.id, values);
             if (success) {
                 form.reset(values);
                 setFormChanged(false);
+                // We don't clear isLoading here - we wait for the UI update
+                // which we detect in the useEffect above
+            } else {
+                setIsLoading(false);
             }
-        } finally {
-            setIsSubmitting(false);
+        } catch (error) {
+            setIsLoading(false);
+            console.log(error);
         }
     };
 
@@ -213,10 +237,14 @@ export function BatteryForm({
                     <div className="flex gap-2 pt-2">
                         <Button
                             type="submit"
-                            disabled={isSubmitting || !formChanged}
+                            disabled={isLoading || !formChanged}
                             className="flex-1"
                         >
-                            {isSubmitting ? "Saving..." : "Save Changes"}
+                            {isLoading ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                "Save Changes"
+                            )}
                         </Button>
                         <Button
                             type="button"
