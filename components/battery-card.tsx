@@ -1,4 +1,4 @@
-import { Battery } from "@/lib/schema";
+import { Battery } from "@/lib/db/schema";
 import { Card } from "@/components/ui/card";
 import { GetStatusIcon } from "@/components/battery-form";
 

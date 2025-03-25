@@ -6,7 +6,7 @@ import {
     BatteryFormValues,
     Battery as BatteryType,
     BatteryStatus,
-} from "@/lib/schema";
+} from "@/lib/db/schema";
 
 import { Separator } from "@/components/ui/separator";
 import { BatteryCharging, BatteryWarning, BatteryFull } from "lucide-react";

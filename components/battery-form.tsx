@@ -26,7 +26,7 @@ import {
     Battery as BatteryType,
     BatteryFormValues,
     batteryFormSchema,
-} from "@/lib/schema";
+} from "@/lib/db/schema";
 
 interface BatteryFormProps {
     battery: BatteryType | null;

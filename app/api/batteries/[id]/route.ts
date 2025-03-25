@@ -1,19 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { redis } from "@/lib/redis";
-import { batteryFormSchema } from "@/lib/schema";
+import { redis } from "@/lib/db";
+import { batteryFormSchema } from "@/lib/db/schema";
 
-export async function GET(
-    request: NextRequest,
-) {
+export async function GET(request: NextRequest) {
     try {
         const id = request.nextUrl.pathname.split("/").pop();
         if (!id) {
             return NextResponse.json(
                 { error: "Battery ID is missing" },
-                { status: 400 }
+                { status: 400 },
             );
         }
-        
+
         const battery = await redis.hgetall(`battery:${id}`);
 
         if (!battery || !Object.keys(battery).length) {
@@ -39,18 +37,16 @@ export async function GET(
     }
 }
 
-export async function PATCH(
-    request: NextRequest,
-) {
+export async function PATCH(request: NextRequest) {
     try {
         const id = request.nextUrl.pathname.split("/").pop();
         if (!id) {
             return NextResponse.json(
                 { error: "Battery ID is missing" },
-                { status: 400 }
+                { status: 400 },
             );
         }
-        
+
         const body = await request.json();
 
         const result = batteryFormSchema.safeParse(body);

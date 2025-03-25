@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import useSWR from "swr";
-import { Battery } from "../schema";
+import { Battery } from "../db/schema";
 import { toast } from "sonner";
 
 const fetcher = async (url: string) => {
