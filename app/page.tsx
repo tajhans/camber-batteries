@@ -12,9 +12,11 @@ import { Separator } from "@/components/ui/separator";
 import { BatteryCharging, BatteryWarning, BatteryFull } from "lucide-react";
 import { BatteryCard } from "@/components/battery-card";
 import { BatteryForm } from "@/components/battery-form";
+import { BatteryCardSkeleton } from "@/components/battery-skeleton";
 
 export default function Home() {
-    const { batteries, isLoading, updateBattery } = useBatteries();
+    const { batteries, isLoading, updateBattery, cachedBatteryCount } =
+        useBatteries();
     const [selectedBatteryId, setSelectedBatteryId] = useState<number | null>(
         null,
     );
@@ -60,7 +62,10 @@ export default function Home() {
             <div className="mb-6">
                 <h3 className="flex items-center gap-2 text-lg font-medium mb-3">
                     {icon}
-                    {title} ({sortedStatusBatteries.length})
+                    {title}{" "}
+                    <span className="text-muted-foreground font-mono">
+                        {sortedStatusBatteries.length}
+                    </span>
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                     {sortedStatusBatteries.map((battery) => (
@@ -87,8 +92,16 @@ export default function Home() {
                 <div>
                     <h2 className="text-xl font-semibold mb-4">Battery Pool</h2>
                     {isLoading ? (
-                        <div className="text-center py-10">
-                            Loading batteries...
+                        <div>
+                            <div className="mb-6">
+                                <h3 className="flex items-center gap-2 text-lg font-medium mb-3">
+                                    <BatteryFull className="h-5 w-5 text-gray-300" />
+                                    Loading batteries...
+                                </h3>
+                                <BatteryCardSkeleton
+                                    count={cachedBatteryCount}
+                                />
+                            </div>
                         </div>
                     ) : batteries.length === 0 ? (
                         <div className="text-center py-10 text-muted-foreground">

@@ -1,7 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import useSWR from "swr";
 import { Battery } from "../db/schema";
 import { toast } from "sonner";
+
+const BATTERY_COUNT_KEY = "battery-count";
 
 const fetcher = async (url: string) => {
     const res = await fetch(url);
@@ -31,6 +33,22 @@ export function useBatteries() {
         fetcher,
         swrOptions,
     );
+
+    useEffect(() => {
+        if (data?.batteries) {
+            localStorage.setItem(
+                BATTERY_COUNT_KEY,
+                data.batteries.length.toString(),
+            );
+        }
+    }, [data?.batteries]);
+
+    const cachedBatteryCount = useMemo(() => {
+        if (typeof window === "undefined") return 7;
+
+        const count = localStorage.getItem(BATTERY_COUNT_KEY);
+        return count ? parseInt(count, 10) : 7;
+    }, []);
 
     const updateBattery = async (
         id: number,
@@ -70,5 +88,6 @@ export function useBatteries() {
         error,
         updateBattery,
         mutate,
+        cachedBatteryCount,
     };
 }
