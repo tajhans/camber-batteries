@@ -6,7 +6,7 @@
 
 A modern web application for FRC robotics teams to track, manage, and maintain their robot batteries. This system helps teams ensure they always have charged batteries ready for matches and practice sessions.
 
-![Battery Management UI](https://camber-batteries.tajhans.com/preview.png˝)
+![Battery Management UI](https://camber-batteries.tajhans.com/preview.png)
 
 ## Table of Contents
 
