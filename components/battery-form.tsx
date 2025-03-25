@@ -30,11 +30,15 @@ import {
 
 interface BatteryFormProps {
     battery: BatteryType | null;
-    onClose: () => void;
-    onSubmit: (id: number, data: BatteryFormValues) => Promise<boolean>;
+    onCloseAction: () => void;
+    onSubmitAction: (id: number, data: BatteryFormValues) => Promise<boolean>;
 }
 
-export function BatteryForm({ battery, onClose, onSubmit }: BatteryFormProps) {
+export function BatteryForm({
+    battery,
+    onCloseAction,
+    onSubmitAction,
+}: BatteryFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formChanged, setFormChanged] = useState(false);
 
@@ -82,7 +86,7 @@ export function BatteryForm({ battery, onClose, onSubmit }: BatteryFormProps) {
 
         setIsSubmitting(true);
         try {
-            const success = await onSubmit(battery.id, values);
+            const success = await onSubmitAction(battery.id, values);
             if (success) {
                 form.reset(values);
                 setFormChanged(false);
@@ -217,7 +221,7 @@ export function BatteryForm({ battery, onClose, onSubmit }: BatteryFormProps) {
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={onClose}
+                            onClick={onCloseAction}
                             className="flex-1"
                         >
                             Close

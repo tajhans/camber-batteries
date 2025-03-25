@@ -123,8 +123,8 @@ export default function Home() {
                     </h2>
                     <BatteryForm
                         battery={selectedBattery}
-                        onClose={() => setSelectedBatteryId(null)}
-                        onSubmit={handleBatteryUpdate}
+                        onCloseAction={() => setSelectedBatteryId(null)}
+                        onSubmitAction={handleBatteryUpdate}
                     />
                 </div>
             </div>
