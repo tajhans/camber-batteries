@@ -50,12 +50,14 @@ A modern web application for FRC robotics teams to track, manage, and maintain t
 ### Installation
 
 1. Clone the repository
+
 ```bash
 git clone https://github.com/your-team/frc-battery-manager.git
 cd frc-battery-manager
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 # or
@@ -63,12 +65,14 @@ yarn install
 ```
 
 3. Create a `.env.local` file with your Redis credentials
+
 ```
 UPSTASH_REDIS_REST_URL=your-redis-url
 UPSTASH_REDIS_REST_TOKEN=your-redis-token
 ```
 
 4. Run the development server
+
 ```bash
 npm run dev
 # or
@@ -86,9 +90,9 @@ Edit the `app/api/batteries/route.ts` file to change the number of default batte
 ```typescript
 // Change the number in the Array.from to adjust battery count
 const defaultBatteries = Array.from({ length: 10 }, (_, i) => ({
-    id: i + 1,
-    status: "needs-charging",
-    voltage: 0,
+  id: i + 1,
+  status: "needs-charging",
+  voltage: 0,
 }));
 ```
 
@@ -98,11 +102,11 @@ To add or modify battery statuses, update the `batteryStatusSchema` in `lib/sche
 
 ```typescript
 export const batteryStatusSchema = z.enum([
-    "charging",
-    "needs-charging",
-    "charged",
-    "in-use",   // Added new status here
-    "damaged"   // Added new status here
+  "charging",
+  "needs-charging",
+  "charged",
+  "in-use", // Added new status here
+  "damaged", // Added new status here
 ]);
 ```
 
@@ -113,13 +117,14 @@ Then update the UI in `components/battery-form.tsx` to include the new statuses 
 To track additional information for each battery:
 
 1. Update the `batterySchema` in `lib/schema.ts`:
+
 ```typescript
 export const batterySchema = z.object({
-    id: z.number(),
-    status: batteryStatusSchema,
-    voltage: z.number().min(0).max(50),
-    cycleCount: z.number().optional(), // Add new field
-    lastTestedDate: z.string().optional(), // Add new field
+  id: z.number(),
+  status: batteryStatusSchema,
+  voltage: z.number().min(0).max(50),
+  cycleCount: z.number().optional(), // Add new field
+  lastTestedDate: z.string().optional(), // Add new field
 });
 ```
 
